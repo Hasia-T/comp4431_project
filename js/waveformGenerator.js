@@ -138,6 +138,7 @@ var WaveformGenerator = {
                 var base = $("#karplus-base>option:selected").val();	// "white-nose", "sawtooth"
                 var b = parseFloat($("#karplus-b").val());
                 var delay = parseInt($("#karplus-p").val());
+		var s = parseInt($("#karplus-stretch").val());
 				
 				if( $("#karplus-use-freq").prop("checked") ) {
 					delay = parseInt(sampleRate / frequency);
@@ -159,7 +160,21 @@ var WaveformGenerator = {
 						//samples[i] = 0.5 * (samples[i–delay] + samples[i–delay-1]);
 						var x = i - delay;
 						var y = i - delay - 1;
-						var sample = 0.5 * ( result[x] + result[y] )
+						// var sample = 0.5 * ( result[x] + result[y] )
+						var sample = 0;
+						
+						if(s<1)
+							s = 1;
+						if(Math.random() < 1 - 1/s){
+							stretch++;
+							// sample = result[x];
+							sample = 0.5 * ( result[x] + result[y] );
+						}else{
+							nostretch++;
+							// sample = 0.5 * ( result[x] + result[y] );
+							sample = result[x];
+						}
+						
 						if (Math.random() < b) {
 							result.push(sample);
 						} else {
